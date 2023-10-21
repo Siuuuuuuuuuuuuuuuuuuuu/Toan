@@ -1,0 +1,262 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.io.BufferedReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.regex.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Artist {
+	
+	private String ID;
+	private String Name;
+	private String Address;
+	private String Birthday;
+	private String Bio;
+	private ArrayList <String> Occupations;
+	private ArrayList <String> Genres;
+	private ArrayList <String> Awards;
+
+	
+	public Artist( String id, String name, String address, String birthday, String bio, ArrayList <String> occupations, ArrayList <String> genres, ArrayList <String> awards  )
+
+	{
+	ID=id;
+	Name=name;
+	Address=address;
+	Birthday=birthday;
+	Bio=bio;
+	Occupations=occupations;
+	Genres=genres;
+	Awards=awards;
+	}
+	
+	public boolean addArtist()	{
+//Condition 1: Artist ID should be exactly 10 characters long; the first three characters should be numbers between 5 to 9, the characters 4th to 8th should be upper case letters (A - Z) and the last two characters should be a special character. 
+		if  (ID.length() != 10 || !ID.matches("^[5-9]{3}[A-Z]{5}[!@#$%^&*()-_=+\\\\|[{]};:'\",<.>/?]{2}$")){
+			 System.out.println("Invalid ID");
+		     return false;
+		}    
+//Condition 2: The format of the birth date of the artist should follow the following format: DD-MM-YYYY.	
+		if (!Birthday.matches("^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\\d{4}$")){
+			System.out.println("Invalid Birthday");
+			return false;
+		}
+//Condition 3: The address of the artist should follow the following format: City|State|Country.
+		if (!Address.matches("^[A-Za-z]+\\|[A-Za-z]+\\|[A-Za-z]+$")) {
+			System.out.println("Invalid Address format");
+			return false;
+		}
+//Condition 4: The bio of the artist should be between 10 to 30 words. 
+		 	String[] words = Bio.split("\\s+");
+		if (words.length < 10 || words.length > 30 ) {
+			System.out.println("Invalid Bio");
+			return false;
+		}
+//Condition 5: An artist should have at least one occupation or a maximum of five occupations.	
+		if (Occupations.size() > 5 || Occupations.size() == 0 ) {
+			System.out.println("Invalid Occupations");
+			return false;
+		}
+//Condition 6: An artist can have zero to a maximum of three awards. Each award should follow the following format: Year, Title. The Title should be between 4 to 10 words. 		
+		if (Awards.size() < 4 && Awards.size() > 0 ) {
+			for (String Awards : Awards) {
+				String[] parts = Awards.split("-",2);
+				String year = parts[0].trim();
+	            String title = parts[1].trim();
+	            String [] head = title.split("\\s+");
+	            if (year.length() != 4 || head.length < 4 || head.length > 10) {
+	            	System.out.println("Invalid Awards");
+	            	return false;
+	            }
+			}
+		}
+//Condition 7: An artist should be active in at least two music genres and a maximum of five genres. Artists cannot be active in 'pop' and 'rock' genres at the same time.		
+		if (Genres.size() > 1 && Genres.size() < 6 ) {
+			 for (String genres : Genres) {
+		            if (Genres.contains("Rock") && Genres.contains("Pop") ) {
+		            	System.out.println("Invalid Genres");
+		            	return false;
+		            }
+			
+			 }
+		}
+// Add information to txt file
+		try {
+			FileWriter fw = new FileWriter("Artists.txt", true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
+			pw.println(ID);
+			pw.println(Name);
+			pw.println(Address);
+			pw.println(Birthday);
+			pw.println(Bio);
+			pw.println(Occupations);
+			pw.println(Genres);
+			pw.println(Awards);
+			pw.close();
+			 } catch (IOException e) {
+			        System.out.println("Error");
+			    }
+		
+		System.out.println("The Artist information can be added");
+	return true  ;
+	}
+	
+	
+	
+	
+	public boolean updateArtist() {
+		// Load the artist's existing information from the TXT file
+        if (!loadFromFile()) {
+            return false; // Unable to load artist information
+        }
+		
+		
+		//Condition 1: Artist ID should be exactly 10 characters long; the first three characters should be numbers between 5 to 9, the characters 4th to 8th should be upper case letters (A - Z) and the last two characters should be a special character. 
+				if  (ID.length() != 10 || !ID.matches("^[5-9]{3}[A-Z]{5}[!@#$%^&*()-_=+\\\\|[{]};:'\",<.>/?]{2}$")){
+					 System.out.println("Invalid ID");
+				     return false;
+				}    
+		//Condition 2: The format of the birth date of the artist should follow the following format: DD-MM-YYYY.	
+				if (!Birthday.matches("^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\\d{4}$")){
+					System.out.println("Invalid Birthday");
+					return false;
+				}
+		//Condition 3: The address of the artist should follow the following format: City|State|Country.
+				if (!Address.matches("^[A-Za-z]+\\|[A-Za-z]+\\|[A-Za-z]+$")) {
+					System.out.println("Invalid Address format");
+					return false;
+				}
+		//Condition 4: The bio of the artist should be between 10 to 30 words. 
+				 	String[] words = Bio.split("\\s+");
+				if (words.length < 10 || words.length > 30 ) {
+					System.out.println("Invalid Bio");
+					return false;
+				}
+		//Condition 5: An artist should have at least one occupation or a maximum of five occupations.	
+				if (Occupations.size() > 5 || Occupations.size() == 0 ) {
+					System.out.println("Invalid Occupations");
+					return false;
+				}
+		//Condition 6: An artist can have zero to a maximum of three awards. Each award should follow the following format: Year, Title. The Title should be between 4 to 10 words. 		
+				if (Awards.size() < 4 && Awards.size() > 0 ) {
+					for (String Awards : Awards) {
+						String[] parts = Awards.split("-",2);
+						String year = parts[0].trim();
+			            String title = parts[1].trim();
+			            String [] head = title.split("\\s+");
+			            if (year.length() != 4 || head.length < 4 || head.length > 10) {
+			            	System.out.println("Invalid Awards");
+			            	return false;
+			            }
+					}
+				}
+		//Condition 7: An artist should be active in at least two music genres and a maximum of five genres. Artists cannot be active in 'pop' and 'rock' genres at the same time.		
+				if (Genres.size() > 1 && Genres.size() < 6 ) {
+					 for (String genres1 : Genres) {
+				            if (Genres.contains("Rock") && Genres.contains("Pop") ) {
+				            	System.out.println("Invalid Genres");
+				            	return false;
+				            }
+					
+					 }
+				}
+				//Condition 8. If an artist was born before 2000, their occupation cannot be changed.
+				String[] birthDateParts = Birthday.split("-");
+			    int birthYear = Integer.parseInt(birthDateParts[2]);
+			    if (birthYear < 2000 ) {
+			        System.out.println("Occupation cannot be changed for artists born before 2000.");
+			        return false;
+			    }
+			    
+			    //Condition 9. Awards that were given to an artist before 2000 can not be changed (neither their year's nor their title). Only the title of awards given to an artist after 2000 can be changed. 
+					for (String Awards : Awards) {
+						String[] parts = Awards.split("-",2);
+						String year = parts[0].trim();
+			            String title = parts[1].trim();
+			             
+			            if ( !year.matches("^20.*")) {
+			            	System.out.println(" Awards cannot be change");
+			            	return false;
+			            }
+					}
+					// Save the updated information back to the TXT file
+			        if (!saveToFile()) {
+			            return false; // Unable to save updated information
+			        }
+
+			        return true ;
+}
+	
+	
+	
+	private boolean loadFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Artists.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(":");
+                if (parts.length == 2) {
+                    String key = parts[0].trim();
+                    String value = parts[1].trim();
+                    if (key.equals("ID")) {
+                        ID = value;
+                    } else if (key.equals("Name")) {
+                        Name = value;
+                    } else if (key.equals("Address")) {
+                        Address = value;
+                    } else if (key.equals("Birthday")) {
+                        Birthday = value;
+                    } else if (key.equals("Bio")) {
+                        Bio = value;
+                    } else if (key.equals("Occupations")) {
+                        Occupations = new ArrayList<>(Arrays.asList(value.split(",")));
+                    } else if (key.equals("Genres")) {
+                        Genres = new ArrayList<>(Arrays.asList(value.split(",")));
+                    } else if (key.equals("Awards")) {
+                        Awards = new ArrayList<>(Arrays.asList(value.split(",")));
+                    }
+                }
+            }
+            return true; // Successfully loaded artist information
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false; // Error loading artist information
+        }
+    }
+
+    private boolean saveToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Artists.txt"))) {
+            writer.write("ID: " + ID);
+            writer.newLine();
+            writer.write("Name: " + Name);
+            writer.newLine();
+            writer.write("Address: " + Address);
+            writer.newLine();
+            writer.write("Birthday: " + Birthday);
+            writer.newLine();
+            writer.write("Bio: " + Bio);
+            writer.newLine();
+            writer.write("Occupations: " + String.join(",", Occupations));
+            writer.newLine();
+            writer.write("Genres: " + String.join(",", Genres));
+            writer.newLine();
+            writer.write("Awards: " + String.join(",", Awards));
+            writer.newLine();
+	      
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false; // Error saving updated information
+        }  
+        System.out.println("The Artist information have been updated");
+            return true; // Successfully saved updated information
+      
+    }
+}
