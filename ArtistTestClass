@@ -1,0 +1,64 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.Before;
+import java.util.ArrayList;
+
+class ArtistTest {
+	
+	@Test
+	public void testAddValidArtist() {
+	 // Create an Artist instance with test data, including genres
+        ArrayList<String> occupations = new ArrayList<>();
+        ArrayList<String> genres = new ArrayList<>();
+        ArrayList<String> awards = new ArrayList<>();
+
+
+        ArrayList<String> occupationsToAdd = new ArrayList<>();
+        occupationsToAdd.add("Singer");
+  
+        
+        ArrayList<String> genresToAdd = new ArrayList<>();
+        genresToAdd.add("Jazz");
+        genresToAdd.add("Classic");
+        genresToAdd.add("Rock");
+        
+        ArrayList<String> awardsToAdd = new ArrayList<>();
+        awardsToAdd.add("2022 - Best Song Written For Visual Media");
+      
+        boolean expectedString = true;
+		
+        
+		 Artist A1 = new Artist("569MMMRR_%","Toan","Melbourne|Victoria|Australia","05-11-1980","I am the most greatest artist of 20th century and all time",occupationsToAdd, genresToAdd, awardsToAdd );
+		 assertEquals(expectedString, A1.addArtist());	
+		
+	}
+	@Test
+	public void testUpdateValidArtist() {
+
+	        ArrayList<String> occupations = new ArrayList<>();
+	        ArrayList<String> genres = new ArrayList<>();
+	        ArrayList<String> awards = new ArrayList<>();
+	        
+	        ArrayList<String> occupationsToAdd = new ArrayList<>();
+	        occupationsToAdd.add("Singer");
+	        occupationsToAdd.add("ginger");
+	        
+	        ArrayList<String> genresToAdd = new ArrayList<>();
+	        genresToAdd.add("Jazz");
+	        genresToAdd.add("Classic");
+	        genresToAdd.add("Rock");
+	        
+	        ArrayList<String> awardsToAdd = new ArrayList<>();
+	        awardsToAdd.add("2022 - Best Song Written For Visual Media");
+	        
+	        Artist U1 = new Artist("569MMMRR_%","Toan","Melbourne|Victoria|Australia","05-11-2080","I am the most greatest artist of 20th century and all time",occupationsToAdd, genresToAdd, awardsToAdd );
+
+	        boolean result = U1.updateArtist();
+
+	
+	        assertTrue(result);
+
+	    }
+}
